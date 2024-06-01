@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
 import yaml
+import os
+# import yaml
 
 from afy.utils import log
-
 
 g_selected_cam = None
 
@@ -85,7 +86,7 @@ def select_camera(cam_frames, window="Camera selector"):
 
         if g_selected_cam is not None:
             break
-        
+
         if key == 27:
             break
 
@@ -97,15 +98,17 @@ def select_camera(cam_frames, window="Camera selector"):
         return list(cam_frames)[0]
 
 
+# print(g_selected_cam)
 if __name__ == '__main__':
-    with open('config.yaml', 'r') as f:
+    # cam_frames = {}
+    yml_file_path = os.path.join(os.path.expanduser('~'), 'avatarify-python', 'config.yaml')
+    with open(yml_file_path, "r") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     cam_frames = query_cameras(config['query_n_cams'])
-
+    # print(cam_frames)
     if cam_frames:
         selected_cam = select_camera(cam_frames)
         print(f"Selected camera {selected_cam}")
     else:
         log("No cameras are available")
-
