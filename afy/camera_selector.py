@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 import yaml
+import os
 
 from afy.utils import log
-
 
 g_selected_cam = None
 
@@ -43,8 +43,10 @@ def make_grid(images, cell_size=(320, 240), cols=2):
     grid = np.zeros((h0 * _rows, w0 * _cols, 3), dtype=np.uint8)
     for i, (camid, img) in enumerate(images.items()):
         img = cv2.resize(img, (w0, h0))
+
         # add rect
         img = cv2.rectangle(img, (1, 1), (w0 - 1, h0 - 1), (0, 0, 255), 2)
+
         # add id
         img = cv2.putText(img, f'Camera {camid}', (10, 30), 0, 1, (0, 255, 0), 2)
         c = i % cols
@@ -85,7 +87,7 @@ def select_camera(cam_frames, window="Camera selector"):
 
         if g_selected_cam is not None:
             break
-        
+
         if key == 27:
             break
 
@@ -98,14 +100,17 @@ def select_camera(cam_frames, window="Camera selector"):
 
 
 if __name__ == '__main__':
-    with open('config.yaml', 'r') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    parent_dir = os.path.basename(os.path.dirname(os.getcwd()))
+    file_location = ['Desktop', 'Downloads', 'Documents', parent_dir, '', 'Programs']
+    for loc in file_location:
+        yml_file_path = os.path.join(os.path.expanduser('~'), loc, 'config.yaml')
+        if os.path.exists(yml_file_path):
+            with open(yml_file_path, "r") as f:
+                config = yaml.load(f, Loader=yaml.FullLoader)
 
     cam_frames = query_cameras(config['query_n_cams'])
-
     if cam_frames:
         selected_cam = select_camera(cam_frames)
         print(f"Selected camera {selected_cam}")
     else:
         log("No cameras are available")
-
