@@ -101,9 +101,10 @@ def select_camera(cam_frames, window="Camera selector"):
 
 if __name__ == '__main__':
     parent_dir = os.path.basename(os.path.dirname(os.getcwd()))
-    file_location = ['Downloads', 'Documents', parent_dir, '']
+    file_location = ['Desktop', 'Downloads', 'Documents', parent_dir, '']
     for loc in file_location:
         yml_file_path = os.path.join(os.path.expanduser('~'), loc, 'config.yaml')
+        print(yml_file_path)
         if os.path.exists(yml_file_path):
             with open(yml_file_path, "r") as f:
                 config = yaml.load(f, Loader=yaml.FullLoader)
